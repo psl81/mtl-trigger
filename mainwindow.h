@@ -25,7 +25,7 @@ public:
     void onMachineStateChanged(bool state);
     void init();
     static void clearLayout(QLayout* layout);
-    void enableTrigger(bool enable);
+    void disableTrigger(bool disable);
 
     Ui::MainWindow* ui;
 

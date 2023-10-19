@@ -5,8 +5,11 @@
 
 int main(int argc, char *argv[])
 {
+    bool emulation = false;
+    if (argc == 2 && QString(argv[1]) == "-e")
+        emulation = true;
     QApplication a(argc, argv);
-    MtlController mtl_controller;
+    MtlController mtl_controller(emulation);
     Controller controller(mtl_controller);
     MainWindow w(controller, mtl_controller);
     controller.setMainWindow(&w);

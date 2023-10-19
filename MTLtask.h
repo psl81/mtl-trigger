@@ -236,13 +236,15 @@ signals:
 class MtlController
 {
 public:
-    MtlController();
+    MtlController(bool emulation = false);
     MtlDataModel* model();
     void connectStation(const QString& station);
     void disconnectStation();
     static bool checkPower();
+    bool isEmulation() const;
 private:
-    MtlDataModel mtl_data;
+    bool is_emulation_;
+    MtlDataModel mtl_data_;
 };
 
 #endif // MTLTASK_H

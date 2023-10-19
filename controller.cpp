@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
 #include <QJsonDocument>
@@ -20,6 +21,11 @@ Controller::Controller(MtlController& mtl_controller)
 
 Controller::~Controller()
 {
+    if (trigger_task_) {
+        trigger_task_->break_loop = true;
+        while (!trigger_task_->wait(100))
+            qApp->processEvents(QEventLoop::AllEvents, 500);
+    }
 }
 
 void Controller::setMainWindow(MainWindow* main_window)
@@ -104,7 +110,7 @@ void Controller::loadSetings()
         auto ignore_power_status = settings_[ConfigValues::ignore_power_status].toBool();
         main_window_->ui->ignorepowerstatus_chb->setChecked(ignore_power_status);
         is_trigger_enable_ = settings_[ConfigValues::trigger_enable].toBool(true);
-        main_window_->ui->trigger_switch->setChecked(!is_trigger_enable_);
+        main_window_->disableTrigger(!is_trigger_enable_);
     }
 }
 

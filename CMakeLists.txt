@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 include(status.cmake)
 _begin_status()
 # version
-set(TS_VERSION "1.0.1")
+set(TS_VERSION "1.0.2")
 _write_status("Test-Scheduler version: ${TS_VERSION}")
 # git branch
 _git_branch(branch)

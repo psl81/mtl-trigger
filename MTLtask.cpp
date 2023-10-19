@@ -300,28 +300,32 @@ int MtlDataModel::Callback(CTRL_CHANNEL_STATUS* ccs)
 }
 
 /// @brief MtlController
-MtlController::MtlController() : 
-    mtl_data()
+MtlController::MtlController(bool emulation) 
+    : mtl_data_()
+    , is_emulation_(emulation)
 {
 }
 
 MtlDataModel* MtlController::model()
 {
-    return &mtl_data;
+    return &mtl_data_;
 }
 
 void MtlController::connectStation(const QString& station)
 {
-    int ret = MTL32::GDSRegisterStation(station.toStdString().c_str(), 
-        "Demo",
-        0,
-        MtlDataModel::Callback);
-
-    //// --- emulate mtl
-    //static MtlEmulator mtl_emulator;
-    //mtl_emulator.registerCallback(MtlDataModel::Callback);
-    //mtl_emulator.start();
-    //// ---
+    if (is_emulation_) {
+        // --- emulate mtl
+        static MtlEmulator mtl_emulator;
+        mtl_emulator.registerCallback(MtlDataModel::Callback);
+        mtl_emulator.start();
+        // ---
+    }
+    else {
+        MTL32::GDSRegisterStation(station.toStdString().c_str(),
+            "Demo",
+            0,
+            MtlDataModel::Callback);
+    }
 }
 
 void MtlController::disconnectStation()
@@ -335,4 +339,9 @@ bool MtlController::checkPower()
     if (MtlDataModel::power_status_ignore)
         return true;
     return MtlDataModel::power_on;
+}
+
+bool MtlController::isEmulation() const
+{
+    return is_emulation_;
 }

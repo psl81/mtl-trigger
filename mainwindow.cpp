@@ -35,7 +35,7 @@ void MainWindow::onMachineStateChanged(bool state)
 
 void MainWindow::init()
 {
-    ui->connect_btn->setEnabled(MTL32::isLoaded());
+    ui->connect_btn->setEnabled(MTL32::isLoaded() || mtl_controller_.isEmulation());
     ui->data_view->setModel(mtl_controller_.model());
     connect(mtl_controller_.model(), &MtlDataModel::machineStateChanged, this, &MainWindow::onMachineStateChanged, Qt::QueuedConnection);
     connect(mtl_controller_.model(), &MtlDataModel::dataReceived, &app_controller_, &Controller::onDataReceived);
@@ -43,7 +43,7 @@ void MainWindow::init()
     connect(ui->trigger_type, &QComboBox::currentTextChanged, &app_controller_, &Controller::onTriggerTypeChanged);
     ui->trigger_type->addItems({ TriggerType::digispark.toString(), TriggerType::com_port.toString() });
     //
-    connect(ui->trigger_switch, &QPushButton::toggled, this, &MainWindow::enableTrigger);
+    connect(ui->trigger_switch, &QPushButton::toggled, this, &MainWindow::disableTrigger);
     //
     app_controller_.loadSetings();
 }
@@ -68,10 +68,12 @@ void MainWindow::clearLayout(QLayout* layout)
     }
 }
 
-void MainWindow::enableTrigger(bool enable)
+void MainWindow::disableTrigger(bool disable)
 {
-    this->ui->trigger_switch->setText(enable ? "Trigger Off" : "Trigger On");
-    app_controller_.enableTrigger(!enable);
+    this->ui->trigger_switch->setText(disable ? "Trigger is Off" : "Trigger is On");
+    app_controller_.enableTrigger(!disable);
+    if (this->ui->trigger_switch->isChecked() != disable)
+        this->ui->trigger_switch->setChecked(disable);
 }
 
 void MainWindow::on_ignorepowerstatus_chb_toggled(bool checked)

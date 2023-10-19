@@ -322,9 +322,9 @@ QString BlockItem::information()
 }
 
 /// @brief class RootBlock
-RootBlock::RootBlock(QTasksModel* model) :
-    BlockItem(nullptr),
-    model(model)
+RootBlock::RootBlock(QTasksModel* model) 
+    : BlockItem(nullptr)
+    , model(model)
 {
 }
 
